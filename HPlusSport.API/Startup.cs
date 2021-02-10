@@ -1,7 +1,9 @@
+using HPlusSport.API.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,6 +29,7 @@ namespace HPlusSport.API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddDbContext<ShopContext>(options => options.UseInMemoryDatabase("shop")); //Telling the application to use in memory database
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

@@ -7,8 +7,8 @@ namespace HPlusSport.API.Models
 {
     public class Category
     {
-        public int id { get; set; }
-
+        public int Id { get; set; }
+        public string Name { get; set; }
         public string MyProperty { get; set; }
 
         public virtual List<Product> Products { get; set; }
