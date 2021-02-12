@@ -1,6 +1,7 @@
 ﻿using HPlusSport.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,17 +24,43 @@ namespace HPlusSport.API.Controllers
 
         }
 
+        //[HttpGet]
+        //public IActionResult GetAllProducts()
+        //{
+        //    return Ok(_context.Products.ToArray()); // We retrive all the products and return them
+        //}
+
+        //[HttpGet("{id:int}")]        
+
+        //public IActionResult GetProduct(int id)
+        //{
+        //    var product = _context.Products.Find(id);  //We retirved a single product and return it
+
+        //    if (product == null)
+        //    {
+        //        return NotFound();                   //Getting http 404 code if no product is found
+        //    }
+        //    return Ok(product);
+        //}
+
+         //Creating Asynchronous Actions
+
         [HttpGet]
-        public IActionResult GetAllProducts()
+        public async Task<IActionResult> GetAllProducts()
         {
-            return Ok(_context.Products.ToArray()); // We retrive all the products and return them
+            return Ok(await _context.Products.ToArrayAsync()); // We retrive all the products and return them
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
 
-        public IActionResult GetProduct(int id)
+        public async  Task<IActionResult> GetProduct(int id)
         {
-            var product = _context.Products.Find(id);  //We retirved a single product and return it
+            var product = await _context.Products.FindAsync(id);  //We retirved a single product and return it
+
+            if (product == null)
+            {
+                return NotFound();                   //Getting http 404 code if no product is found
+            }
             return Ok(product);
         }
     }
