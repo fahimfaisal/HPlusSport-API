@@ -1,4 +1,5 @@
-﻿using HPlusSport.API.Models;
+﻿using HPlusSport.API.Classes;
+using HPlusSport.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,12 +44,18 @@ namespace HPlusSport.API.Controllers
         //    return Ok(product);
         //}
 
-         //Creating Asynchronous Actions
+        //Creating Asynchronous Actions
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts([FromQuery] QueryParameters queryParameters)  //[FromQuery] means the query comes from the url
         {
-            return Ok(await _context.Products.ToArrayAsync()); // We retrive all the products and return them
+            IQueryable<Product> products = _context.Products;
+
+            products = products
+                 .Skip(queryParameters.Size * (queryParameters.Page - 1))  //We skip the amount the pages according to the page
+                 .Take(queryParameters.Size);                              //Take the number of products accoding to the size
+
+            return Ok(await products.ToArrayAsync()); // We retrive all the products and return them
         }
 
         [HttpGet("{id:int}")]
