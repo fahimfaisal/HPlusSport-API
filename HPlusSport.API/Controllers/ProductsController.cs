@@ -66,12 +66,33 @@ namespace HPlusSport.API.Controllers
                 products = products.Where(p => p.Sku == queryParameters.Sku);
             }
 
+            if (!string.IsNullOrEmpty(queryParameters.Name ))
+            {
+                products = products.Where(P => P.Name.ToLower().Contains(queryParameters.Name.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParameters.SearchTerm))
+            {
+                products = products.Where(p => p.Sku.ToLower().Contains(queryParameters.SearchTerm.ToLower()) || p.Name.ToLower().Contains(queryParameters.SearchTerm.ToLower())); //We return the search result comparing sku and Name
+            }
+
+
+
+            if (!string.IsNullOrEmpty(queryParameters.SortBy))
+            {
+                if (typeof(Product).GetProperty(queryParameters.SortBy) != null) 
+                {
+                    products = products.OrderByCustom(queryParameters.SortBy, queryParameters.SortOrder);     //We sort the items using a helper method from IQueryExtensions class
+                }
+            }
             products = products
                  .Skip(queryParameters.Size * (queryParameters.Page - 1))  //We skip the amount the pages according to the page
                  .Take(queryParameters.Size);                              //Take the number of products accoding to the size
 
             return Ok(await products.ToArrayAsync()); // We retrive all the products and return them
         }
+
+  
 
         [HttpGet("{id:int}")]
 
