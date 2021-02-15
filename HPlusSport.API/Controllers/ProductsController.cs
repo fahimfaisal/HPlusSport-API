@@ -12,11 +12,11 @@ namespace HPlusSport.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly ShopContext _context;
 
-        public ProductController(ShopContext context)
+        public ProductsController(ShopContext context)
         {
             _context = context;
 
@@ -47,9 +47,24 @@ namespace HPlusSport.API.Controllers
         //Creating Asynchronous Actions
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts([FromQuery] QueryParameters queryParameters)  //[FromQuery] means the query comes from the url
+        public async Task<IActionResult> GetAllProducts([FromQuery] ProductQueryParameter queryParameters)  //[FromQuery] means the query comes from the url
         {
             IQueryable<Product> products = _context.Products;
+
+            if (queryParameters.MinPrice !=null && queryParameters.MinPrice != null)
+            {
+                products = products.Where(
+                        p => p.Price >= queryParameters.MinPrice.Value &&
+                             p.Price <= queryParameters.MaxPrice.Value                                        //Sets the condition to return items in  min and max price
+                           
+                             );
+                    
+            }
+
+            if (!string.IsNullOrEmpty(queryParameters.Sku))
+            {
+                products = products.Where(p => p.Sku == queryParameters.Sku);
+            }
 
             products = products
                  .Skip(queryParameters.Size * (queryParameters.Page - 1))  //We skip the amount the pages according to the page
