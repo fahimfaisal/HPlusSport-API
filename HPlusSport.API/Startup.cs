@@ -30,7 +30,12 @@ namespace HPlusSport.API
         {
 
             services.AddDbContext<ShopContext>(options => options.UseInMemoryDatabase("shop")); //Telling the application to use in memory database
-            services.AddControllers();
+            services.AddControllers().ConfigureApiBehaviorOptions(options =>
+            {
+               //options.SuppressModelStateInvalidFilter = true;               //if the modelstate is not valid do not automatically send the HTTP 400 header
+                                                                               //Therefore default value of the page can be used.
+
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HPlusSport.API", Version = "v1" });
