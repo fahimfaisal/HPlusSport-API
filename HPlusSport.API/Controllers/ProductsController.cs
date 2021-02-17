@@ -92,11 +92,11 @@ namespace HPlusSport.API.Controllers
             return Ok(await products.ToArrayAsync()); // We retrive all the products and return them
         }
 
-  
+
 
         [HttpGet("{id:int}")]
 
-        public async  Task<IActionResult> GetProduct(int id)
+        public async Task<IActionResult> GetProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);  //We retirved a single product and return it
 
@@ -105,6 +105,22 @@ namespace HPlusSport.API.Controllers
                 return NotFound();                   //Getting http 404 code if no product is found
             }
             return Ok(product);
+        }
+
+
+        [HttpPost]
+
+        public async Task<ActionResult<Product>> PostProduct([FromBody]Product product)
+        {
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(
+                "GetProduct",
+                new {id = product.Id}, product                                    //Returns the ID of the newly created product 
+
+
+                );
         }
     }
 }
