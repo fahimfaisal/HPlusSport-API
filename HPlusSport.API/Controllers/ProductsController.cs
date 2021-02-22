@@ -51,14 +51,14 @@ namespace HPlusSport.API.Controllers
         {
             IQueryable<Product> products = _context.Products;
 
-            if (queryParameters.MinPrice !=null && queryParameters.MinPrice != null)
+            if (queryParameters.MinPrice != null && queryParameters.MinPrice != null)
             {
                 products = products.Where(
                         p => p.Price >= queryParameters.MinPrice.Value &&
                              p.Price <= queryParameters.MaxPrice.Value                                        //Sets the condition to return items in  min and max price
-                           
+
                              );
-                    
+
             }
 
             if (!string.IsNullOrEmpty(queryParameters.Sku))
@@ -66,7 +66,7 @@ namespace HPlusSport.API.Controllers
                 products = products.Where(p => p.Sku == queryParameters.Sku);
             }
 
-            if (!string.IsNullOrEmpty(queryParameters.Name ))
+            if (!string.IsNullOrEmpty(queryParameters.Name))
             {
                 products = products.Where(P => P.Name.ToLower().Contains(queryParameters.Name.ToLower()));
             }
@@ -80,7 +80,7 @@ namespace HPlusSport.API.Controllers
 
             if (!string.IsNullOrEmpty(queryParameters.SortBy))
             {
-                if (typeof(Product).GetProperty(queryParameters.SortBy) != null) 
+                if (typeof(Product).GetProperty(queryParameters.SortBy) != null)
                 {
                     products = products.OrderByCustom(queryParameters.SortBy, queryParameters.SortOrder);     //We sort the items using a helper method from IQueryExtensions class
                 }
@@ -110,17 +110,47 @@ namespace HPlusSport.API.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult<Product>> PostProduct([FromBody]Product product)
+        public async Task<ActionResult<Product>> PostProduct([FromBody] Product product)
         {
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(
                 "GetProduct",
-                new {id = product.Id}, product                                    //Returns the ID of the newly created product 
+                new { id = product.Id }, product                                    //Returns the ID of the newly created product 
 
 
                 );
         }
+
+        [HttpPut("{id}")]
+
+        public async Task<IActionResult> PutProduct([FromRoute] int id , [FromBody] Product product)
+        {
+            if(id != product.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(product).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)                           
+            {
+                if (_context.Products.Find(id) == null)
+                {
+                    return NotFound();
+                }
+                
+                throw;
+            }
+
+            return NoContent();
+        }
+
+    
     }
 }
