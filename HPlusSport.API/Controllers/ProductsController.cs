@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 namespace HPlusSport.API.Controllers
 {
     [ApiVersion("1.0")]                                   //Making the Api version 1.0
-    [Route("v{v:apiVersion}/[controller]")]               //Changed [controller] to products because the controller name doesnot match 
+    //[Route("v{v:apiVersion}/[controller]")]               //Changed [controller] to products because the controller name doesnot match 
+    [Route("products")]
     [ApiController]                                       //Makes automated model validation for all action methods
     public class ProductsV1_0Controller : ControllerBase
     {
@@ -200,7 +201,8 @@ namespace HPlusSport.API.Controllers
     }
 
     [ApiVersion("2.0")]                                   //Making the Api version 2.0
-    [Route("v{v:apiVersion}/[controller]")]
+    //[Route("v{v:apiVersion}/[controller]")]
+    [Route("products")]
     [ApiController]                                       //Makes automated model validation for all action methods
     public class ProductsV2_0Controller : ControllerBase
     {
