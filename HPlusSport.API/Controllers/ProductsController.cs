@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace HPlusSport.API.Controllers
 {
     [Route("[controller]")]
-    [ApiController]
+    [ApiController]                                       //Makes automated model validation for all action methods
     public class ProductsController : ControllerBase
     {
         private readonly ShopContext _context;
@@ -169,6 +169,32 @@ namespace HPlusSport.API.Controllers
 
             return product;
         }
-    
+
+        [HttpPost]                                                //Using HttpPost beacuse HttpDelete only deletes single item
+        [Route("{Delete}")]
+        public async Task<ActionResult<Product>> DeleteMultiple([FromQuery] int[] ids)
+        {
+            var products = new List<Product>();
+
+            foreach (var id in ids)
+            {
+                var product = await _context.Products.FindAsync(id);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                products.Add(product);
+            }
+
+            _context.Products.RemoveRange(products);                             //Deleting several items
+
+            await _context.SaveChangesAsync();
+
+            return Ok(products);
+        }
+
+
     }
 }
