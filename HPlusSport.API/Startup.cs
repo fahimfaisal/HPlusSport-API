@@ -36,10 +36,20 @@ namespace HPlusSport.API
                                                                                //Therefore default value of the page can be used.
 
             });
+
+            services.AddApiVersioning(options =>                                                   //Configuring the services for Api versioning
+            {
+                options.ReportApiVersions = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HPlusSport.API", Version = "v1" });
             });
+
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
